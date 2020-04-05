@@ -53,6 +53,7 @@ class UserRepository {
   // Login 
 
   Future<bool> login(String username, String password) async { 
+    print('Calling post auth');
     var response = await http.post("$baseUrl/auth/signin",
       headers: <String, String> {
         'Content-Type': 'application/json; charset=UTF-8',

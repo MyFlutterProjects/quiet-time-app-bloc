@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:qt_bloc_app/blocs/auth_bloc.dart';
+import 'package:qt_bloc_app/blocs/user_bloc.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -6,15 +10,33 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  
+  AuthBloc _authBloc;
+
+  @override 
+  void initState() {
+    _authBloc = AuthBloc();
+  }
 
   double screenHeight;
+  final _usernameController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  // StreamSubscription blocSubscription;
+
+
+  void authenticate() {
+    _authBloc.authenticate(_usernameController.text, _passwordController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
 
     screenHeight = MediaQuery.of(context).size.height;// get screen size
     return Scaffold(
-      body: SingleChildScrollView( 
+      body: 
+      
+      SingleChildScrollView( 
         child: Stack( 
           children: <Widget>[
             lowerHalf(context),
@@ -27,10 +49,15 @@ class _LoginState extends State<Login> {
   }
 
   Widget upperHalf(BuildContext context) { 
+     var screenSize = MediaQuery.of(context).size;
+     print(screenSize);
+
     return Container( 
       height: screenHeight /2,
+      width: screenSize.width, // fill up screen width
       child: Image.asset(
-        'images/coffee_bible.jpg',
+        // 'images/coffee_bible.jpg',
+        "images/reading-bible.jpg",
          fit: BoxFit.cover,  // fit image in box     
       ),
     );
@@ -75,7 +102,8 @@ class _LoginState extends State<Login> {
                     ),
                   ),
                   SizedBox( height: 15,),
-                  TextFormField( 
+                  TextFormField(
+                    controller: _usernameController,
                     decoration: InputDecoration( 
                       labelText: "Your username",
                       hasFloatingPlaceholder: true
@@ -83,6 +111,7 @@ class _LoginState extends State<Login> {
                   ),
                   SizedBox(height: 20),
                   TextFormField( 
+                    controller: _passwordController,
                     decoration: InputDecoration( 
                       labelText: "Password",
                       hasFloatingPlaceholder: true)
@@ -108,7 +137,9 @@ class _LoginState extends State<Login> {
                         shape: RoundedRectangleBorder( 
                           borderRadius: BorderRadius.circular(5)
                         ),
-                        onPressed: () {},
+                        onPressed: () { 
+                          authenticate();
+                        },
                       )
 
                   ],

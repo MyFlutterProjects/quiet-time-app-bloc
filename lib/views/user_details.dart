@@ -27,6 +27,7 @@ class _UserDetailsState extends State<UserDetails> {
   
 
   StreamSubscription blocSubscription;
+  
   @override
   void initState() {
     _userBloc = UserBloc();
@@ -95,7 +96,6 @@ class _UserDetailsState extends State<UserDetails> {
   String _value = '';
 
   Future _selectDate() async {
-    print('valsks');
     DateTime picked = await showDatePicker( 
       context: context, 
       initialDate: DateTime.now(), 
