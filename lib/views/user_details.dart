@@ -18,7 +18,12 @@ class _UserDetailsState extends State<UserDetails> {
   final _firstNameController = TextEditingController();
   final _emailController = TextEditingController();
   final _surnameNameController = TextEditingController();
-   final _roleController = TextEditingController();
+  final _roleController = TextEditingController();
+  final _lastNameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  // final _genderControler = TextEditingController();
+  final _residenceControler = TextEditingController();
+  final _dateOfBirthControler = TextEditingController();
   
 
   StreamSubscription blocSubscription;
@@ -37,9 +42,13 @@ class _UserDetailsState extends State<UserDetails> {
 
       if (onData.isLoaded) {
         _firstNameController.text = onData.user.firstName;
-        _surnameNameController.text = onData.user.surname;
+        _lastNameController.text = onData.user.lastName;
+        _surnameNameController.text = onData.user.username;
         _emailController.text = onData.user.email;
         _roleController.text = onData.user.email;
+        _residenceControler.text = onData.user.residence;
+        _dateOfBirthControler.text = onData.user.dateOfBirth;
+        _genderDropdownValue = onData.user.gender;
       }
     });
     super.initState();
@@ -56,9 +65,14 @@ class _UserDetailsState extends State<UserDetails> {
     _userBloc.createUser( 
       User( 
         firstName: _firstNameController.text,
+        lastName: _lastNameController.text,
+        gender: _genderDropdownValue,
+        dateOfBirth: _dateOfBirthControler.text,
         email: _emailController.text,
-        surname: _surnameNameController.text,
-        roles: _roleController.text
+        username: _surnameNameController.text,
+        roles: _roleController.text,
+        password: _passwordController.text,
+        residence: _residenceControler.text
       ),
     );
   }
@@ -69,7 +83,7 @@ class _UserDetailsState extends State<UserDetails> {
         id: id,
         firstName: _firstNameController.text,
         email: _emailController.text,
-        surname: _surnameNameController.text
+        username: _surnameNameController.text
         ),
     );
   }
@@ -77,6 +91,24 @@ class _UserDetailsState extends State<UserDetails> {
   void deleteUser(String id) {
     _userBloc.deleteUser(widget.id);
   }
+
+  String _value = '';
+
+  Future _selectDate() async {
+    print('valsks');
+    DateTime picked = await showDatePicker( 
+      context: context, 
+      initialDate: DateTime.now(), 
+      firstDate: DateTime(1990), lastDate: DateTime(2019));
+      
+      if (picked != null) setState(() {
+        _value = picked.toString();
+      });
+  }
+
+  // List<String> gender = ['Male', 'Female'];
+          String _genderDropdownValue;
+          String _dateOfBirthValue;
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +151,8 @@ class _UserDetailsState extends State<UserDetails> {
             );
           }
 
+          
+
           return state.isLoading 
             ? LinearProgressIndicator()
             : Form(
@@ -130,7 +164,16 @@ class _UserDetailsState extends State<UserDetails> {
                       title: TextFormField( 
                         controller: _firstNameController,
                         decoration: InputDecoration( 
-                          hintText: "Name",
+                          hintText: "First Name",
+                        ),
+                      ),
+                    ),
+                    ListTile( 
+                      leading: Icon(Icons.person),
+                      title: TextFormField( 
+                        controller: _lastNameController,
+                        decoration: InputDecoration( 
+                          hintText: 'Last Name'
                         ),
                       ),
                     ),
@@ -141,11 +184,63 @@ class _UserDetailsState extends State<UserDetails> {
                         decoration: InputDecoration(hintText: "Username"),
                       ),
                     ),
+                    // DropdownButton<String>( 
+                    //   hint: _selectGender == null 
+                    //   ? Text('Please choose a gender')
+                    //   : Text(_selectGender,
+                    //    style: TextStyle(color: Colors.blue),
+
+                    //   ),
+                    //   value: _selectGender,
+                    //   onChanged: (String newValue) {
+                    //     setState(() {
+                    //       _selectGender = newValue;
+                    //     });
+                    //   },
+                    //   items: gender.map((String gender) {
+                    //     return DropdownMenuItem<String>( 
+                    //       child: Text(gender),
+                    //       value: gender,
+                    //     );
+                    //   }).toList(),
+                    // ),
+                    DropdownButton( 
+                      hint: _genderDropdownValue == null
+                      ? Text('Select Gender')
+                      : Text(_genderDropdownValue, 
+                        style: TextStyle(color: Colors.blue),
+                      ),
+                      // isExpanded: true,
+                      iconSize: 30.0,
+                      style: TextStyle(color: Colors.blue),
+                      items: ['Male', 'Female'].map( 
+                        (val) {
+                          return DropdownMenuItem(value: val,child: Text(val),);
+                        },
+                      ).toList(),
+                      onChanged: (val) {
+                        setState(() {
+                          _genderDropdownValue = val;
+                          // print(_genderDropdownValue);
+                        });
+                      },
+                    ),
+                    RaisedButton( 
+                      onPressed: _selectDate,
+                      child: Text('Select Day of Birth'),
+                    ),
                     ListTile( 
                       leading: Icon(Icons.mail),
                       title: TextFormField( 
                         controller: _emailController,
                         decoration: InputDecoration(hintText: "Email"),
+                      ),
+                    ),
+                    ListTile( 
+                      leading: Icon(Icons.mail),
+                      title: TextFormField( 
+                        controller: _passwordController,
+                        decoration: InputDecoration(hintText: "Password"),
                       ),
                     ),
                       ListTile( 

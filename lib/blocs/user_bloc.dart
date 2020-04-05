@@ -27,7 +27,6 @@ class UserState {
     this.isLoaded =false,
   });
 
-  // StreamSubscription listen(Null Function(onData) param0) {}
 }
 
 class UserBloc extends Bloc<UserEvents, UserState> {
